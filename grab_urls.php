@@ -65,41 +65,27 @@ function api_request($path, $data=null, $ckan_file=null) {
     return json_decode($result)->result;
 }
   
-//Empty variables    
-$urls = array();
-
-//Pull all the group identifiers from the registry
-//We store them in an array , $groups, for later use
-$groups = api_request('action/organization_list');
-
-//Overide the group array, e.g. for testing. Uncomment and edit the line(s) below
-//$groups = array("hewlett-foundation","aa");
-//$groups = array("dfid");
-
-
-//Loop through each group and save the URL end-points of the data files
+//Loop through each page and save the URL end-points of the data files
 //You may need to set up an empty directory called "urls"
 echo "Fetching:" . PHP_EOL;
-foreach ($groups as $group) {
-    $file = "urls/" . $group;
-    echo $group."\n";
-    try {
-        $urls_string = '';
-        $result = api_request('action/package_search', array('fq'=>"organization:".$group, 'rows'=>1000000), "ckan/" . $group);
-        foreach ($result->results as $package) {
-            try {
-                $urls_string .= $package->name . ' ' . (string)$package->resources[0]->url . PHP_EOL;
-            } catch (Exception $e) {
-                // Catch exceptions here to prevent one url from breaking an entire publisher
-                print 'Caught exception in '.$file.': ' . $e->getMessage();
-            }
-        }
-        file_put_contents($file, $urls_string, LOCK_EX);
-    } catch (Exception $e) {
-        print 'Caught exception in '.$file.': ' . $e->getMessage();
+$page = 1;
+$page_size = 1000;
+while (true) {
+    echo 'Page '.$page."\n";
+    $start = $page_size * ($page-1);
+    $result = api_request('action/package_search', array('start'=>$start, 'rows'=>$page_size), "ckan/" . $page);
+    if (count($result->results) == 0) {
+        break;
     }
+    foreach ($result->results as $package) {
+        $organization = $package->organization;
+        if (count($package->resources) > 0 && $organization) {
+            $file = "urls/" . $organization->name;
+            $url_string = $package->name . ' ' . (string)$package->resources[0]->url . PHP_EOL;
+            file_put_contents($file, $url_string, FILE_APPEND);
+        }
+    }
+    $page++;
 }
 
 ?>
-
-
