@@ -54,7 +54,7 @@ do
       echo $exitcode `basename $f` $url_line
     fi
 
-    # Delay of 1 second between requests, so as not to upset servers
-    sleep 1s
+    # Delay of 1/2 second between requests, so as not to upset servers
+    sleep 0.5s
   done
 done
