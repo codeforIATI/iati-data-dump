@@ -30,7 +30,7 @@ IFS=$'\n'
 FILES=urls/*
 for f in $FILES
 do
-  num_lines=$(cat $f | wc -l | bc)
+  num_lines=$(cat $f | wc -l | awk '{$1=$1};1')
   filename=$(echo $f | cut -c 6-)
   if [ "$num_lines" == "1" ]; then
     plural=""
