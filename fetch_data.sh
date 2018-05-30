@@ -30,14 +30,9 @@ IFS=$'\n'
 FILES=urls/*
 for f in $FILES
 do
-  num_lines=$(cat $f | wc -l | awk '{$1=$1};1')
+  num_lines=$(cat $f | wc -l)
   filename=$(echo $f | cut -c 6-)
-  if [ "$num_lines" == "1" ]; then
-    plural=""
-  else
-    plural="s"
-  fi
-  echo "Fetching $filename ($num_lines dataset$plural)"
+  echo "Fetching $filename ($num_lines datasets)"
   for url_line in `cat $f`; do
     url=`echo $url_line | sed 's/^[^ ]* //'`
     package_name=`echo $url_line | sed 's/ .*$//'`
