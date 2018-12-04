@@ -80,6 +80,13 @@ while (true) {
     foreach ($result->results as $package) {
         $organization = $package->organization;
         if (count($package->resources) > 0 && $organization) {
+            $metadata_filepath = "metadata/" . $organization->name;
+            if (!file_exists($metadata_filepath)) {
+                mkdir($metadata_filepath, 0755);
+            }
+            $metadata_file = $metadata_filepath . "/" . $package->name . ".json";
+            file_put_contents($metadata_file, json_encode($package));
+
             $file = "urls/" . $organization->name;
             $url_string = $package->name . ' ' . (string)$package->resources[0]->url . PHP_EOL;
             file_put_contents($file, $url_string, FILE_APPEND);

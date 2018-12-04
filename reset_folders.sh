@@ -1,4 +1,4 @@
 #!/bin/bash
 
-rm -rf urls ckan data
-mkdir urls ckan data
+rm -rf urls ckan data metadata
+mkdir urls ckan data metadata
