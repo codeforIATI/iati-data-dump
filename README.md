@@ -36,9 +36,9 @@ Installation and usage
 ----------------------
 
 Place all files in the same directory.
-Create empty directories called `urls`, `data`, `ckan` and `metadata`
+Create empty directories called `urls`, `data` and `metadata`
 ```
-mkdir urls data ckan metadata
+mkdir urls data metadata
 ```
 
 From a terminal, use php-cli (command line interface) to run:

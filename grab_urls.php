@@ -73,7 +73,7 @@ $page_size = 1000;
 while (true) {
     echo 'Page '.$page."\n";
     $start = $page_size * ($page-1);
-    $result = api_request('action/package_search', array('start'=>$start, 'rows'=>$page_size), "ckan/" . $page);
+    $result = api_request('action/package_search', array('start'=>$start, 'rows'=>$page_size));
     if (count($result->results) == 0) {
         break;
     }
