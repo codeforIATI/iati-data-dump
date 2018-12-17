@@ -83,9 +83,9 @@ while (true) {
             $metadata_filepath = "metadata/" . $organization->name;
             if (!file_exists($metadata_filepath)) {
                 mkdir($metadata_filepath, 0755);
-                $organization_metadata = api_request('action/group_show', array('id'=>$organization->name));
-                $metadata_file = $metadata_filepath . ".json";
-                file_put_contents($metadata_file, json_encode($organization_metadata));
+                $org_metadata = api_request('action/group_show', array('id'=>$organization->name));
+                $org_metadata_file = $metadata_filepath . ".json";
+                file_put_contents($org_metadata_file, json_encode($org_metadata));
             }
             $metadata_file = $metadata_filepath . "/" . $package->name . ".json";
             file_put_contents($metadata_file, json_encode($package));
