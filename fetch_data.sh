@@ -32,12 +32,7 @@ for f in $FILES
 do
   num_lines=$(cat $f | wc -l)
   filename=$(echo $f | cut -c 6-)
-  if [ "$num_lines" == "1" ]; then
-    plural=""
-  else
-    plural="s"
-  fi
-  echo "Fetching $filename ($num_lines dataset$plural)"
+  echo "Fetching $filename ($num_lines datasets)"
   for url_line in `cat $f`; do
     url=`echo $url_line | sed 's/^[^ ]* //'`
     package_name=`echo $url_line | sed 's/ .*$//'`
@@ -60,9 +55,10 @@ do
     exitcode=$?
     # If the exitcode is not zero (ie. there was an error), output to STDOUT
     if [ $exitcode -ne 0 ]; then
-      echo "Error: Failed to download the following dataset belonging to `basename $f`:" >&2
-      echo $url_line >&2
-      echo "Exit code $exitcode" >&2
+      echo "Error: Failed to download the following dataset belonging to `basename $f`:"
+      echo $url_line
+      echo "Exit code $exitcode"
+      echo "-----------"
     fi
 
     # Delay of 1/2 second between requests, so as not to upset servers
