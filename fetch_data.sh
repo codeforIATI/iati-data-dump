@@ -30,15 +30,11 @@ IFS=$'\n'
 FILES=urls/*
 for f in $FILES
 do
-  num_lines=$(cat $f | wc -l)
-  filename=$(echo $f | cut -c 6-)
-  echo "Fetching $filename ($num_lines datasets)"
   for url_line in `cat $f`; do
     url=`echo $url_line | sed 's/^[^ ]* //'`
     package_name=`echo $url_line | sed 's/ .*$//'`
     mkdir -p data/`basename $f`/
 
-    # --quiet no output
     # --no-check-certificate added to deal with sites using https - not the
     #                        best solution!
     # --restrict-file-names=nocontrol ensures that UTF8 files get created
@@ -55,10 +51,7 @@ do
     exitcode=$?
     # If the exitcode is not zero (ie. there was an error), output to STDOUT
     if [ $exitcode -ne 0 ]; then
-      echo "Error: Failed to download the following dataset belonging to `basename $f`:"
-      echo $url_line
-      echo "Exit code $exitcode"
-      echo "-----------"
+      echo $exitcode `basename $f` $url_line
     fi
 
     # Delay of 1/2 second between requests, so as not to upset servers
