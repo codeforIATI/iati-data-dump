@@ -2,38 +2,30 @@
 ## Perform several validation tests on the files in a downloaded data snapshot
 
 # Check for xml well formedness errors
+rm -f xml-errors
 for f in data/*/*; do
+    echo "Checking XML: $f"
     # Check file is not empty
     if [[ -s $f ]]; then
-        xmllint $f > /dev/null
+        xmllint --noout $f 2> /dev/null
+        if [ $? -ne 0 ]; then echo $f >> xml-errors; fi
     fi
-done 2> xmlerrors
+done
 # Prevent empty gist that won't be uploaded
 echo "." >> xml-errors
 
+echo "Downloading Schemas"
 ./download_schemas.sh
 
 # Validate all the files against the relevant schema
+rm -f validation-errors
 for f in data/*/*; do
-    if [[ -s $f ]]; then
-        echo $f;
-    fi
-done > list
-for f in data/*/*; do
+    echo "Validating: $f"
     if [[ -s $f ]]; then
         topel="`xmllint --xpath "name(/*)" "$f"`"
         version="`xmllint --xpath "string(/*/@version)" "$f"`"
-        if [ "$version" == "1.01" ] || [ "$version" == "1" ] || [ "$version" == "1.0" ] || [ "$version" == "1.00" ]; then version="1.01";
-        elif [ "$version" == "1.02" ]; then version="1.02";
-        else version="1.03"; fi
-        if [ "$topel" == "iati-activities" ]; then
-            xmllint --schema schemas/$version/iati-activities-schema.xsd --noout "$f" 2> /dev/null
-            if [ $? -eq 0 ]; then echo $f; fi
-        elif [ "$topel" == "iati-organisations" ]; then
-            xmllint --schema schemas/$version/iati-organisations-schema.xsd --noout "$f" 2> /dev/null
-            if [ $? -eq 0 ]; then echo $f; fi
-        fi
+        if [ "$version" == "1.01" ] || [ "$version" == "1" ] || [ "$version" == "1.0" ] || [ "$version" == "1.00" ]; then version="1.01"; fi
+        xmllint --noout --schema schemas/$version/$topel-schema.xsd "$f" 2> /dev/null
+        if [ $? -ne 0 ]; then echo $f >> validation-errors; fi
     fi
-done > list-validate
-comm -23 list list-validate > validation-errors
 echo "." >> validation-errors
