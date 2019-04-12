@@ -3,8 +3,12 @@
 
 IFS=$'\n'
 
+echo "Downloading Schemas"
+./download_schemas.sh
+
 # Check for xml well formedness errors
-rm -f xml-errors
+rm -f xml-errors validation-errors
+
 FILES=urls/*
 for f in $FILES; do
     for url_line in `cat $f`; do
@@ -17,23 +21,10 @@ for f in $FILES; do
             xmllint --noout $filename 2> /dev/null
             if [ $? -ne 0 ]; then
                 echo $org_name $url_line >> xml-errors;
+                continue
             fi
         fi
-    done
-done
-# Prevent empty gist that won't be uploaded
-echo "." >> xml-errors
 
-echo "Downloading Schemas"
-./download_schemas.sh
-
-# Validate all the files against the relevant schema
-rm -f validation-errors
-for f in $FILES; do
-    for url_line in `cat $f`; do
-        org_name=`basename $f`
-        package_name=`echo $url_line | sed 's/ .*$//'`
-        filename="data/$org_name/$package_name.xml"
         echo "Validating: $filename"
         if [[ -s $filename ]]; then
             topel="`xmllint --xpath "name(/*)" "$filename"`"
@@ -46,4 +37,6 @@ for f in $FILES; do
         fi
     done
 done
+# Prevent empty gist that won't be uploaded
+echo "." >> xml-errors
 echo "." >> validation-errors
