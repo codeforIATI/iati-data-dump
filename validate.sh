@@ -28,4 +28,5 @@ for f in data/*/*; do
         xmllint --noout --schema schemas/$version/$topel-schema.xsd "$f" 2> /dev/null
         if [ $? -ne 0 ]; then echo $f >> validation-errors; fi
     fi
+done
 echo "." >> validation-errors
