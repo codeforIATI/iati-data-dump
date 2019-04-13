@@ -15,18 +15,16 @@ for f in $FILES; do
         org_name=`basename $f`
         package_name=`echo $url_line | sed 's/ .*$//'`
         filename="data/$org_name/$package_name.xml"
-        echo "Checking XML: $package_name"
         # Check file is not empty
         if [[ -s $filename ]]; then
+            echo "Checking XML: $package_name"
             xmllint --noout $filename 2> /dev/null
             if [ $? -ne 0 ]; then
                 echo $org_name $url_line >> xml-errors;
                 continue
             fi
-        fi
 
-        echo "Validating: $filename"
-        if [[ -s $filename ]]; then
+            echo "Validating: $package_name"
             topel="`xmllint --xpath "name(/*)" "$filename"`"
             version="`xmllint --xpath "string(/*/@version)" "$filename"`"
             if [ "$version" == "1.01" ] || [ "$version" == "1" ] || [ "$version" == "1.0" ] || [ "$version" == "1.00" ]; then version="1.01"; fi
