@@ -1,8 +1,21 @@
 import json
 from os.path import exists
 from os import makedirs
+from time import sleep
 
 import requests
+
+
+def request_with_backoff(*args, attempts=5, backoff=0.5, **kwargs):
+    for attempt in range(1, attempts + 1):
+        try:
+            result = requests.request(*args, **kwargs)
+            return result
+        except requests.exceptions.ConnectionError:
+            wait = attempt * backoff
+            print(f'Rate limited! Retrying after {wait} seconds')
+            sleep(wait)
+    raise Exception(f'Failed after {attempts} attempts. Giving up.')
 
 
 # Loop through each page and save the URL end-points of the data files
@@ -14,7 +27,8 @@ page_size = 1000
 while True:
     print(f'Page {page}')
     start = page_size * (page - 1)
-    result = requests.post(
+    result = request_with_backoff(
+        'post',
         f'{api_root}/package_search',
         data={'start': start, 'rows': page_size}).json()['result']
     if result['results'] == []:
@@ -26,7 +40,8 @@ while True:
             metadata_filepath = f'metadata/{organization["name"]}'
             if not exists(metadata_filepath):
                 makedirs(metadata_filepath)
-                org_metadata = requests.post(
+                org_metadata = request_with_backoff(
+                    'post',
                     f'{api_root}/group_show',
                     data={'id': organization['name']}).json()['result']
                 org_metadata_file = f'{metadata_filepath}.json'
