@@ -36,26 +36,27 @@ while True:
 
     for package in result['results']:
         organization = package['organization']
-        if len(package['resources']) > 0 and organization:
-            metadata_filepath = f'metadata/{organization["name"]}'
-            if not exists(metadata_filepath):
-                makedirs(metadata_filepath)
-                org_metadata = request_with_backoff(
-                    'post',
-                    f'{api_root}/group_show',
-                    data={'id': organization['name']}).json()['result']
-                org_metadata_file = f'{metadata_filepath}.json'
-                with open(org_metadata_file, 'w') as f:
-                    json.dump(org_metadata, f)
-            metadata_file = f'{metadata_filepath}/{package["name"]}.json'
-            with open(metadata_file, 'w') as f:
-                json.dump(package, f)
+        if package['resources'] == [] or not organization:
+            continue
+        metadata_filepath = f'metadata/{organization["name"]}'
+        if not exists(metadata_filepath):
+            makedirs(metadata_filepath)
+            org_metadata = request_with_backoff(
+                'post',
+                f'{api_root}/group_show',
+                data={'id': organization['name']}).json()['result']
+            org_metadata_file = f'{metadata_filepath}.json'
+            with open(org_metadata_file, 'w') as f:
+                json.dump(org_metadata, f)
+        metadata_file = f'{metadata_filepath}/{package["name"]}.json'
+        with open(metadata_file, 'w') as f:
+            json.dump(package, f)
 
-            file = f'urls/{organization["name"]}'
-            url_string = '{name} {url}\n'.format(
-                name=package['name'],
-                url=package['resources'][0]['url'],
-            )
-            with open(file, 'a') as f:
-                f.write(url_string)
+        file = f'urls/{organization["name"]}'
+        url_string = '{name} {url}\n'.format(
+            name=package['name'],
+            url=package['resources'][0]['url'],
+        )
+        with open(file, 'a') as f:
+            f.write(url_string)
     page += 1
