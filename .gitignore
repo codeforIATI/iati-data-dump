@@ -4,3 +4,4 @@ metadata*
 schemas*
 data
 *.swp
+/pyenv/

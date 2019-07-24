@@ -2,7 +2,7 @@
 # These are the commands used to update a git repository each night. If you
 # wish to use it yourself, you will need comment out, or change the gist
 # commands and create a git repository in the data/ and urls/ directories.
-# 
+#
 # Full details of how this is deployed on IATI servers can be found in this
 # state file:
 # https://github.com/IATI/IATI-Websites/blob/master/salt/dashboard.sls
@@ -26,8 +26,8 @@ cd urls
 git rm -r *
 cd ..
 
-# Run grab_urls.php
-php grab_urls.php
+# Run grab_urls.py
+python grab_urls.py
 
 # Run /fetch_data.sh and capture both STDIN and STDERR.
 # Both of these are uploaded to github gist
