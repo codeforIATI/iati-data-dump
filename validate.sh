@@ -15,6 +15,10 @@ for f in $FILES; do
         org_name=`basename $f`
         package_name=`echo $url_line | sed 's/ .*$//'`
         filename="data/$org_name/$package_name.xml"
+        # Hack to ignore package "usaid-multiple-3"
+        if [[ "$package_name" == "usaid-multiple-3" ]]; then
+            continue
+        fi
         # Check file is not empty
         if [[ -s $filename ]]; then
             echo "Checking XML: $package_name"
