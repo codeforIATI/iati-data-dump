@@ -4,7 +4,7 @@
 IFS=$'\n'
 
 echo "Downloading Schemas"
-./download_schemas.sh
+./download_schemas.sh || exit $?
 
 # Check for xml well formedness errors
 rm -f xml-errors validation-errors
