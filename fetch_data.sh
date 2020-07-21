@@ -36,7 +36,7 @@ do
     mkdir -p data/`basename $f`/
 
     echo "$url"
-    curl --insecure --fail --silent --header "Accept: application/xhtml+xml,application/xml,*/*;q=0.9" --connect-timeout 10 --user-agent "IATI data dump" --create-dirs --output data/`basename $f`/$package_name.xml "$url" 2>&1
+    curl --location --insecure --fail --silent --show-error --header "Accept: application/xhtml+xml,application/xml,*/*;q=0.9" --retry 4 --retry-delay 10 --speed-time 30 --speed-limit 1000 --user-agent "IATI data dump" --create-dirs --output data/`basename $f`/$package_name.xml "$url" 2>&1 >/dev/null
     # Fetch the exitcode of the previous command
     exitcode=$?
     # If the exitcode is not zero (ie. there was an error), output to STDERR
