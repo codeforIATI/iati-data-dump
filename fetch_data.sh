@@ -35,6 +35,7 @@ do
     package_name=`echo $url_line | sed 's/ .*$//'`
     mkdir -p data/`basename $f`/
 
+    echo "$url"
     curl --insecure --fail --silent --header "Accept: application/xhtml+xml,application/xml,*/*;q=0.9" --connect-timeout 10 --user-agent "IATI data dump" --create-dirs --output data/`basename $f`/$package_name.xml "$url" 2>&1
     # Fetch the exitcode of the previous command
     exitcode=$?
