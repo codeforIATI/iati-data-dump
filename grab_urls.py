@@ -24,6 +24,18 @@ print('Fetching:')
 api_root = 'https://iatiregistry.org/api/3/action'
 page = 1
 page_size = 1000
+
+tmpl = 'echo Downloading {package_name} : "{url}" ; ' + \
+       'curl -L -k -f -s ' + \
+       '-H "Accept: application/xhtml+xml, application/xml,*/*;q=0.9" ' + \
+       '--retry 4 --retry-delay 10 -y 30 ' + \
+       '-Y 1000 -A "IATI data dump" ' + \
+       '--create-dirs -o data/{org_name}/{package_name}.xml ' + \
+       '"{url}" 2>&1 >/dev/null ; exitcode=$? ; ' + \
+       'test "$exitcode" != 0 && ' + \
+       'echo $exitcode {org_name} {package_name} {url} > ' + \
+       'logs/{package_name}.log\n'
+
 while True:
     print(f'Page {page}')
     start = page_size * (page - 1)
@@ -38,25 +50,29 @@ while True:
         organization = package['organization']
         if package['resources'] == [] or not organization:
             continue
-        metadata_filepath = f'metadata/{organization["name"]}'
+        package_name = package['name']
+        url = package['resources'][0]['url']
+        org_name = organization["name"]
+
+        metadata_filepath = f'metadata/{org_name}'
         if not exists(metadata_filepath):
             makedirs(metadata_filepath)
             org_metadata = request_with_backoff(
                 'post',
                 f'{api_root}/group_show',
-                data={'id': organization['name']}).json()['result']
+                data={'id': org_name}).json()['result']
             org_metadata_file = f'{metadata_filepath}.json'
             with open(org_metadata_file, 'w') as f:
                 json.dump(org_metadata, f)
-        metadata_file = f'{metadata_filepath}/{package["name"]}.json'
+        metadata_file = f'{metadata_filepath}/{package_name}.json'
         with open(metadata_file, 'w') as f:
             json.dump(package, f)
 
-        file = f'urls/{organization["name"]}'
-        url_string = '{name} {url}\n'.format(
-            name=package['name'],
-            url=package['resources'][0]['url'],
+        output = tmpl.format(
+            org_name=org_name,
+            package_name=package_name,
+            url=url,
         )
-        with open(file, 'a') as f:
-            f.write(url_string)
+        with open('downloads.curl', 'a') as f:
+            f.write(output)
     page += 1

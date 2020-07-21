@@ -1,7 +1,7 @@
-url*
-data*
-metadata*
-schemas*
-data
-*.swp
+downloads.curl
+/logs/
+/data/
+/metadata/
+/schemas/
 /pyenv/
+errors

@@ -1,4 +1,4 @@
 #!/bin/bash
 
-rm -rf urls data metadata schemas
-mkdir urls data metadata schemas
+rm -rf downloads.curl errors data logs metadata schemas
+mkdir data logs metadata schemas
