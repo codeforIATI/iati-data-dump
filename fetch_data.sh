@@ -35,18 +35,7 @@ do
     package_name=`echo $url_line | sed 's/ .*$//'`
     mkdir -p data/`basename $f`/
 
-    # --no-check-certificate added to deal with sites using https - not the
-    #                        best solution!
-    # --restrict-file-names=nocontrol ensures that UTF8 files get created
-    #                                 properly
-    # -U sets our custom user agent, which allows sites to keep track of which
-    #    robots are accessing them
-    # --read-timeout=30 times out if no data is sent for more than 30 seconds
-    # --dns-timeout=10 times out if DNS information takes longer than 10 seconds
-    # --connect-timeout=10 times out if establishing a connection takes longer
-    #                      than 10 seconds
-    # --tries=3 means a download is tried at most 3 times
-    wget --no-verbose --header "Accept: application/xhtml+xml,application/xml,*/*;q=0.9" --no-check-certificate --restrict-file-names=nocontrol --tries=3 --read-timeout=30 --dns-timeout=10 --connect-timeout=10 -U "IATI data dump" "$url" -O data/`basename $f`/$package_name.xml 2>&1
+    curl --insecure --fail --silent --header "Accept: application/xhtml+xml,application/xml,*/*;q=0.9" --connect-timeout 10 --user-agent "IATI data dump" --create-dirs --output data/`basename $f`/$package_name.xml "$url" 2>&1
     # Fetch the exitcode of the previous command
     exitcode=$?
     # If the exitcode is not zero (ie. there was an error), output to STDERR
