@@ -68,6 +68,9 @@ while True:
         with open(metadata_file, 'w') as f:
             json.dump(package, f)
 
+        with open(f'urls/{org_name}', 'a') as f:
+            f.write(f'{package_name} {url}\n')
+
         output = tmpl.format(
             org_name=org_name,
             package_name=package_name,

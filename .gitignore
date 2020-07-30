@@ -1,7 +1,10 @@
-downloads.curl
 /logs/
 /data/
+/urls/
 /metadata/
 /schemas/
 /pyenv/
-errors
+
+*errors
+downloads.curl
+metadata.json
