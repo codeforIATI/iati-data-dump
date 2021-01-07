@@ -81,11 +81,12 @@ def main(args):
             output = tmpl.format(
                 org_name=org_name,
                 package_name=package_name,
-                url=url,
+                url=url.replace(' ', '%20'),
             )
             with open('downloads.curl', 'a') as f:
                 f.write(output)
         page += 1
+
 
 if __name__ == '__main__':
     main(sys.argv[1:])
