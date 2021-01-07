@@ -35,7 +35,7 @@ def main(args):
            'curl -L -k -f -s ' + \
            '-H "Accept: application/xhtml+xml, application/xml,*/*;q=0.9" ' + \
            '--retry 4 --retry-delay 10 -y 30 ' + \
-           '-Y 1000 -A "IATI data dump" ' + \
+           '-Y 1000 -A "IATI data dump 1.0" ' + \
            '--create-dirs -o data/{org_name}/{package_name}.xml ' + \
            '"{url}" 2>&1 >/dev/null ; exitcode=$? ; ' + \
            'test "$exitcode" != 0 && ' + \
