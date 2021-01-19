@@ -6,18 +6,16 @@ IATI Registry Refresher
 Introduction
 ------------
 
-This small aplication allows you to query the CKAN implementation at iatiregistry.org
-to find all 'end point' urls of data recorded on the registry, and to then download that data.
+This application queries the [IATI Registry API](iatiregistry.org) for URLs of data recorded on the registry, and then downloads that data.
 
-The registry holds records about where data can be found on the interent.
+The application is just 2 scripts that you run one after the other:
 
-The application is basically 2 scripts that you run one after the other.
+ * `grab_urls.py` queries the registry and creates a text file called "downloads.curl" of curl commands for downloading the data. It also optionally downloads dataset metadata. If you don’t want to download dataset metadata, run:
 
-`grab_urls.py`
-queries the registry and creates a text file for each group on the registry of all url end points of IATI data files
-
-`fetch_data.sh`
-uses wget to pull all the data from those url text files and deposit them in their own directory.
+    ```
+    python grab_urls.py --skip-metadata
+    ```
+ * `fetch_data.sh` runs the generated downloads.curl file, and logs any errors encountered.
 
 
 Requirements
@@ -44,43 +42,32 @@ pip install -r requirements.txt
 Installation and usage
 ----------------------
 
-Place all files in the same directory.
-Create empty directories called `urls`, `data` and `metadata`
+Clone the repository:
 ```
-mkdir urls data metadata
+git clone https://github.com/codeforIATI/IATI-Registry-Refresher.git
+cd IATI-Registry-Refresher
 ```
 
-From a terminal, run:
+Create empty directories:
 ```
-python grab_urls.py
+./reset_folders.sh
 ```
-(if you want to set up your own paths, copy this file to e.g. `grab_my_urls.py` and edit the paths.)
-This gives the data endpoints for all the files in the IATI registry (see 
-http://iatiregistry.org/)
 
-Run fetch_data.sh to get all the data.
-(In a terminal type `./fetch_data.sh`) 
-(if you want to set up your own paths, copy this file to e.g. `fetch_my_data.sh` and edit the paths.)
+To create the downloads.curl file, run:
+```
+python grab_urls.py [--skip-metadata]
+```
 
-
-
-Creating a git data snapshot
-----------------------------
-
-The code in `git.sh` can be used to update a git repository (in the data directory) with a new commit each time it is run. The IATI Tech Team maintains a git repository with nightly snapshot commits, but it is not public, see https://github.com/IATI/IATI-Stats#getting-some-data-to-run-stats-on
-
-
-Wget Caveats
-------------
-
-If your copy of wget is compiled against an old version of gnutls, then some https downloads will fail. Please make sure your system has the latest version of gnutls installed.
-
+To fetch the data, run:
+```
+./fetch_data.sh
+```
 
 Bugs, issues and feature requests
---------------------------------
+---------------------------------
 
 If you find any bugs, note any issues or have any feature requests, please
-report them at https://github.com/caprenter/IATI-Registry-Refresher
+report them at https://github.com/codeforIATI/IATI-Registry-Refresher
 
 Licence
 -------
