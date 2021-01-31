@@ -7,15 +7,17 @@ from time import sleep
 import requests
 
 
-def request_with_backoff(*args, attempts=5, backoff=0.5, **kwargs):
+def request_with_backoff(*args, attempts=10, backoff=0.5, **kwargs):
     for attempt in range(1, attempts + 1):
         try:
             result = requests.request(*args, **kwargs)
-            return result
+            if result.status_code == 200:
+                return result
         except requests.exceptions.ConnectionError:
-            wait = attempt * backoff
-            print(f'Rate limited! Retrying after {wait} seconds')
-            sleep(wait)
+            pass
+        wait = attempt * backoff
+        print(f'Error! Retrying after {wait} seconds')
+        sleep(wait)
     raise Exception(f'Failed after {attempts} attempts. Giving up.')
 
 
