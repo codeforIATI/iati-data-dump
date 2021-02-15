@@ -41,7 +41,7 @@ def main(args):
            '--create-dirs -o data/{org_name}/{package_name}.xml ' + \
            '"{url}" 2>&1 >/dev/null ; exitcode=$? ; ' + \
            'test "$exitcode" != 0 && ' + \
-           'echo $exitcode {org_name} {package_name} {url} > ' + \
+           'echo $exitcode {org_name} {package_name} "{url}" > ' + \
            'logs/{package_name}.log\n'
 
     while True:
