@@ -1,6 +1,7 @@
 import sys
+import shutil
 import json
-from os.path import exists
+from os.path import dirname, exists, join
 from os import makedirs
 from time import sleep
 
@@ -22,6 +23,7 @@ def request_with_backoff(*args, attempts=10, backoff=0.5, **kwargs):
 
 
 def main(args):
+    cache = '--cache' in args
     skip_metadata = '--skip-metadata' in args
     if skip_metadata:
         print('Skipping metadata')
@@ -61,6 +63,16 @@ def main(args):
             package_name = package['name']
             url = package['resources'][0]['url']
             org_name = organization["name"]
+
+            if cache:
+                filename = join(org_name, package_name + '.xml')
+                cache_file = join('cache', filename)
+                if exists(cache_file):
+                    out_file = join('data', filename)
+                    out_path = dirname(out_file)
+                    if not exists(out_path):
+                        makedirs(out_path, exist_ok=True)
+                    shutil.move(cache_file, out_file)
 
             if not skip_metadata:
                 metadata_filepath = f'metadata/{org_name}'
