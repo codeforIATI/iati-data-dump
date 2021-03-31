@@ -10,13 +10,14 @@ import requests
 
 def request_with_backoff(*args, attempts=10, backoff=0.5, **kwargs):
     for attempt in range(1, attempts + 1):
+        wait = attempt * backoff
         try:
             result = requests.request(*args, **kwargs)
             if result.status_code == 200:
+                sleep(wait)
                 return result
         except requests.exceptions.ConnectionError:
             pass
-        wait = attempt * backoff
         print(f'Error! Retrying after {wait} seconds')
         sleep(wait)
     raise Exception(f'Failed after {attempts} attempts. Giving up.')
