@@ -8,9 +8,10 @@ from time import sleep
 import requests
 
 
-def request_with_backoff(*args, attempts=100, backoff=0.5, **kwargs):
+def request_with_backoff(*args, attempts=100, backoff=0.1, **kwargs):
     for attempt in range(1, attempts + 1):
-        wait = attempt * backoff
+        # exponential backoff
+        wait = (pow(2, attempt) - 1) * backoff
         try:
             result = requests.request(*args, **kwargs)
             if result.status_code == 200:
