@@ -15,8 +15,6 @@ Downloading a single archive file is significantly faster. That’s available he
 
 We perform a daily fetch of all IATI data, compress it, and put the archive onto [dropbox](https://www.dropbox.com). There’s a timestamp on dropbox that lets you know how fresh the data is.
 
-Under the hood, data is downloaded using [a modified fork of IATI-Registry-Refresher](https://github.com/codeforIATI/IATI-Registry-Refresher).
-
 [This github gist](https://gist.github.com/codeforIATIbot/f117c9be138aa94c9762d57affc51a64) is updated with the list of erroring datasets.
 
 #### Acknowledgements
