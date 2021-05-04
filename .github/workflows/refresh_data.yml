@@ -1,0 +1,73 @@
+name: Refresh data
+on:
+  schedule:
+    - cron: '0 */3 * * *'
+jobs:
+  refresh_data:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+      with:
+        submodules: true
+    - name: Set up Python 3.7
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.7
+    - uses: ruby/setup-ruby@v1
+      with:
+        bundler-cache: true
+    - uses: actions/cache@v2
+      name: Cache dependencies
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    - name: Create folders
+      run: |
+        ./reset_folders.sh >/dev/null
+    - name: Download and unzip last data dump
+      run: |
+        curl -sL "https://www.dropbox.com/s/kkm80yjihyalwes/iati_dump.zip?dl=1" -o "iati_dump.zip"
+        unzip -oq iati_dump.zip
+        rm -rf iati_dump.zip metadata metadata.json
+        mv data cache
+        mkdir data
+        echo "START_TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")" >> $GITHUB_ENV
+    - name: Fetch URLs and metadata
+      run: |
+        python grab_urls.py --cache
+        rm -rf cache
+    - name: Fetch data
+      run: |
+        ./fetch_data.sh
+        echo "." >> errors
+        echo "END_TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")" >> $GITHUB_ENV
+    - name: Create initial metadata.json
+      run: |
+        echo "{\"created_at\": \"${{ env.START_TIMESTAMP }}\", \"updated_at\": \"${{ env.END_TIMESTAMP }}\"}" > metadata.json
+    - name: Zip up the fetched data
+      run: |
+        zip -gqr iati_data.zip data metadata metadata.json
+        echo "FILE_SIZE=$(wc -c < iati_data.zip | xargs)" >> $GITHUB_ENV
+    - name: Upload zip to dropbox
+      run: |
+        python dropbox_upload.py "/IATI data dump" iati_data.zip --token "${{ secrets.DROPBOX_TOKEN }}"
+    - name: Adding token to .gist
+      run: |
+        echo "${{ secrets.GH_TOKEN }}" > ~/.gist
+    - name: Upload metadata to gist
+      run: |
+        echo "{\"file_size\": \"${{ env.FILE_SIZE }}\", \"created_at\": \"${{ env.START_TIMESTAMP }}\", \"updated_at\": \"${{ env.END_TIMESTAMP }}\"}" > metadata.json
+        bundle exec gist -u efd190029713c6775c43962444dcb8df metadata.json
+    - name: Uploading errors to gist
+      run: |
+        bundle exec gist -u f117c9be138aa94c9762d57affc51a64 errors
+    - name: Tidy up
+      run: |
+        rm -rf iati_data.zip metadata.json errors
+        ./reset_folders.sh >/dev/null

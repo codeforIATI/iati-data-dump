@@ -1,0 +1,26 @@
+.wf-active, .wf-inactive {
+    display: block !important;
+}
+
+* {
+    font-family: 'Play', sans-serif;
+}
+
+body {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+}
+
+main {
+    flex: 1 0 auto;
+}
+
+h1 {
+    font-family: 'Corben', cursive;
+}
+
+h5, h5 a {
+    font-family: 'Roboto', sans-serif;
+    line-height: 150%;
+}

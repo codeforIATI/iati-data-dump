@@ -1,0 +1,67 @@
+---
+---
+<!doctype html>
+<html style="display:none;">
+    <head>
+        <script type="text/javascript">
+          WebFontConfig = {
+            google: { families: ['Corben:700', 'Play', 'Roboto', 'Material Icons'] }
+          };
+          (function() {
+            var wf = document.createElement('script');
+            wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
+              '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
+            wf.type = 'text/javascript';
+            wf.async = 'true';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(wf, s);
+          })();
+        </script>
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" crossorigin="anonymous">
+        <link href="css.css?ver={{ site.github.build_revision }}" rel="stylesheet">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <meta name="description" content="Download a daily snapshot of all IATI data (and metadata) from the IATI Registry.">
+
+        <meta property="og:site_name" content="IATI Data Dump">
+        <meta property="og:url" content="{{ site.github.url }}">
+        <meta property="og:title" content="IATI Data Dump">
+        <meta property="og:image" content="{{ site.github.url }}/meta.png">
+        <meta property="og:type" content="website">
+        <meta property="og:description" content="Download a daily snapshot of all IATI data (and metadata) from the IATI Registry.">
+
+        <title>IATI Data Dump</title>
+    </head>
+    <body>
+        <header class="center">
+            <h1>IATI Data Dump</h1>
+        </header>
+
+        <main class="center">
+            <div class="row">
+                <h5 class="header col s12 light">A daily snapshot of all <a href="https://iatistandard.org">IATI data</a> (and metadata) on the <a href="https://iatiregistry.org">IATI Registry</a></h5>
+            </div>
+            <div class="row">
+                <p>
+                    <a class="waves-effect waves-light btn-large" href="https://www.dropbox.com/s/kkm80yjihyalwes/iati_dump.zip?dl=1"><i class="material-icons left">cloud_download</i>Download</a>
+                </p>
+
+                <p><em id="metadata">Checking date of last update &hellip;</em></p>
+
+                <a href="https://gist.githubusercontent.com/codeforIATIbot/f117c9be138aa94c9762d57affc51a64/raw/errors">View error log</a>
+            </div>
+        </main>
+
+        <footer class="page-footer orange">
+            <div class="container">
+                <p class="grey-text text-lighten-4">Built using <a class="orange-text text-lighten-4" href="https://github.com/IATI/IATI-Registry-Refresher">IATI Registry Refresher</a>, <a class="orange-text text-lighten-4" href="https://github.com/features/actions">Github Actions</a> and <a class="orange-text text-lighten-4" href="https://materializecss.com">Materialize</a>.</p>
+            </div>
+            <div class="footer-copyright">
+                <div class="container">
+                A <a class="orange-text text-lighten-3" href="https://codeforiati.org">Code for IATI</a> project / <a class="orange-text text-lighten-3" href="https://github.com/codeforIATI/iati-data-dump">Source code</a> / <a class="orange-text text-lighten-3" href="https://github.com/codeforIATI/iati-data-dump/issues/new/choose">Report a bug</a>
+                </div>
+            </div>
+        </footer>
+
+        <script src="js.js?ver={{ site.github.build_revision }}" type="text/javascript"></script>
+    </body>
+</html>

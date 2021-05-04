@@ -1,92 +1,24 @@
-IATI Registry Refresher
-=======================
+## IATI Data Dump
 
-[![License: MIT](https://img.shields.io/badge/license-GPLv3-blue.svg)](https://github.com/IATI/IATI-Registry-Refresher#licence)
+#### A daily snapshot of all IATI data (and metadata) on the IATI registry.
 
-Introduction
-------------
+ * [Download all IATI data](https://www.dropbox.com/s/kkm80yjihyalwes/iati_data.zip?dl=1)
+ * [View on dropbox](https://www.dropbox.com/sh/iddx793xw47fwb0/AADwQBNWyCvQhh1E89a4XW7da?dl=0&lst=)
 
-This application queries the [IATI Registry API](iatiregistry.org) for URLs of data recorded on the registry, and then downloads that data.
+#### Rationale
 
-The application is just 2 scripts that you run one after the other:
+Lots of IATI products do a daily pull of all IATI XML data. That involves downloading gigabytes of data, via thousands of HTTP requests. So it’s quite slow.
 
- * `grab_urls.py` queries the registry and creates a text file called "downloads.curl" of curl commands for downloading the data. It also optionally downloads dataset metadata. If you don’t want to download dataset metadata, run:
+Downloading a single archive file is significantly faster. That’s available here!
 
-    ```
-    python grab_urls.py --skip-metadata
-    ```
- * `fetch_data.sh` runs the generated downloads.curl file, and logs any errors encountered.
+#### How does this work?
 
+We perform a daily fetch of all IATI data, compress it, and put the archive onto [dropbox](https://www.dropbox.com). There’s a timestamp on dropbox that lets you know how fresh the data is.
 
-Requirements
-------------
-IATI Registry Refresher requires python 3.
+Under the hood, data is downloaded using [a modified fork of IATI-Registry-Refresher](https://github.com/codeforIATI/IATI-Registry-Refresher).
 
-It also requires curl.
+[This github gist](https://gist.github.com/codeforIATIbot/f117c9be138aa94c9762d57affc51a64) is updated with the list of erroring datasets.
 
-On Ubuntu:
+#### Acknowledgements
 
-```
-sudo apt-get install curl
-sudo apt-get install python-pip python-dev
-```
-
-Then set up a virtual environment:
-
-```
-python3 -m venv pyenv
-source pyenv/bin/activate
-pip install -r requirements.txt
-```
-
-Installation and usage
-----------------------
-
-Clone the repository:
-```
-git clone https://github.com/codeforIATI/IATI-Registry-Refresher.git
-cd IATI-Registry-Refresher
-```
-
-Create empty directories:
-```
-./reset_folders.sh
-```
-
-To create the downloads.curl file, run:
-```
-python grab_urls.py [--skip-metadata]
-```
-
-To fetch the data, run:
-```
-./fetch_data.sh
-```
-
-Bugs, issues and feature requests
----------------------------------
-
-If you find any bugs, note any issues or have any feature requests, please
-report them at https://github.com/codeforIATI/IATI-Registry-Refresher
-
-Licence
--------
-
-``` 
-Copyright 2012 caprenter <caprenter@gmail.com>
-     
-This file is part of IATI Registry Refresher.
-     
-IATI Registry Refresher is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-    
-IATI Registry Refresher is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-    
-You should have received a copy of the GNU General Public License
-along with IATI Registry Refresher.  If not, see <http://www.gnu.org/licenses/>.
-```
+The code relies heavily on [IATI Registry Refresher](https://github.com/IATI/IATI-Registry-Refresher), made by [@caprenter](https://github.com/caprenter) and [@Bjwebb](https://github.com/Bjwebb).
