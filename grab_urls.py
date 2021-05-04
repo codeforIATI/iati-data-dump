@@ -37,8 +37,7 @@ def main(args):
     page = 1
     page_size = 1000
 
-    tmpl = 'echo Downloading {package_name} : "{url}" ; ' + \
-           'curl -L -k -f -s ' + \
+    tmpl = 'curl -L -k -f -s ' + \
            '-H "Accept: application/xhtml+xml, application/xml,*/*;q=0.9" ' + \
            '--retry 4 --retry-delay 10 -y 30 ' + \
            '-Y 1000 -A "IATI data dump 1.0" ' + \
