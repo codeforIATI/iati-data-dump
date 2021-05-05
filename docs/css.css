@@ -24,3 +24,9 @@ h5, h5 a {
     font-family: 'Roboto', sans-serif;
     line-height: 150%;
 }
+
+.tooltipped {
+    text-decoration-line: underline;
+    text-decoration-style: dotted;
+    cursor: pointer;
+}
