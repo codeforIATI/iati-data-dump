@@ -5,6 +5,7 @@
 /metadata/
 /schemas/
 /pyenv/
+_site/
 
 /errors
 /downloads.curl
