@@ -1,3 +1,15 @@
+nav {
+    padding:.5rem 1rem;
+    box-shadow: none;
+    -webkit-box-shadow: none;
+}
+
+nav .brand-logo {
+    position:static;
+    -webkit-transform:none;
+    transform:none;
+}
+
 .wf-active, .wf-inactive {
     display: block !important;
 }
