@@ -33,74 +33,67 @@ def main(args):
     # Loop through each page and save the URL end-points of the data files
     # You may need to set up an empty directory called "urls"
     print('Fetching:')
-    api_root = 'https://iatiregistry.org/api/3/action'
-    page = 1
-    page_size = 1000
 
     tmpl = 'curl -L -k -f -s ' + \
            '-H "Accept: application/xhtml+xml, application/xml,*/*;q=0.9" ' + \
            '--retry 4 --retry-delay 10 -y 30 ' + \
            '-Y 1000 -A "IATI data dump 1.0" ' + \
-           '--create-dirs -o data/{org_name}/{package_name}.xml ' + \
+           '--create-dirs -o data/{publisher_id}/{dataset_name}.xml ' + \
            '"{url}" 2>&1 >/dev/null ; exitcode=$? ; ' + \
            'test "$exitcode" != 0 && ' + \
-           'echo $exitcode {org_name} {package_name} "{url}" > ' + \
-           'logs/{package_name}.log\n'
+           'echo $exitcode {publisher_id} {dataset_name} "{url}" > ' + \
+           'logs/{dataset_name}.log\n'
 
-    while True:
-        print(f'Page {page}')
-        start = page_size * (page - 1)
-        result = request_with_backoff(
-            'post',
-            f'{api_root}/package_search',
-            data={'start': start, 'rows': page_size}).json()['result']
-        if result['results'] == []:
-            break
+    datasets = requests.get(
+        "https://registry.codeforiati.org/dataset_list.json").json()["result"]
 
-        for package in result['results']:
-            organization = package['organization']
-            if package['resources'] == [] or not organization:
-                continue
-            package_name = package['name']
-            url = package['resources'][0]['url']
-            org_name = organization["name"]
+    publishers = requests.get(
+        "https://registry.codeforiati.org/publisher_list.json").json()["result"]
+    publishers = {
+        publisher["name"]: publisher
+        for publisher in publishers
+    }
 
-            if cache:
-                filename = join(org_name, package_name + '.xml')
-                cache_file = join('cache', filename)
-                if exists(cache_file):
-                    out_file = join('data', filename)
-                    out_path = dirname(out_file)
-                    if not exists(out_path):
-                        makedirs(out_path, exist_ok=True)
-                    shutil.move(cache_file, out_file)
+    for dataset in datasets:
+        organization = dataset['organization']
+        if dataset['resources'] == [] or not organization:
+            continue
+        dataset_name = dataset['name']
+        url = dataset['resources'][0]['url']
+        publisher_id = organization["name"]
 
-            if not skip_metadata:
-                metadata_filepath = f'metadata/{org_name}'
-                if not exists(metadata_filepath):
-                    makedirs(metadata_filepath)
-                    org_metadata = request_with_backoff(
-                        'post',
-                        f'{api_root}/group_show',
-                        data={'id': org_name}).json()['result']
-                    org_metadata_file = f'{metadata_filepath}.json'
-                    with open(org_metadata_file, 'w') as f:
-                        json.dump(org_metadata, f)
-                metadata_file = f'{metadata_filepath}/{package_name}.json'
-                with open(metadata_file, 'w') as f:
-                    json.dump(package, f)
+        if cache:
+            filename = join(publisher_id, dataset_name + '.xml')
+            cache_file = join('cache', filename)
+            if exists(cache_file):
+                out_file = join('data', filename)
+                out_path = dirname(out_file)
+                if not exists(out_path):
+                    makedirs(out_path, exist_ok=True)
+                shutil.move(cache_file, out_file)
 
-            with open(f'urls/{org_name}', 'a') as f:
-                f.write(f'{package_name} {url}\n')
+        if not skip_metadata:
+            metadata_filepath = f'metadata/{publisher_id}'
+            if not exists(metadata_filepath):
+                makedirs(metadata_filepath)
+                publisher_metadata = publishers[publisher_id]
+                publisher_metadata_file = f'{metadata_filepath}.json'
+                with open(publisher_metadata_file, 'w') as f:
+                    json.dump(publisher_metadata, f)
+            metadata_file = f'{metadata_filepath}/{dataset_name}.json'
+            with open(metadata_file, 'w') as f:
+                json.dump(dataset, f)
 
-            output = tmpl.format(
-                org_name=org_name,
-                package_name=package_name,
-                url=url.replace(' ', '%20'),
-            )
-            with open('downloads.curl', 'a') as f:
-                f.write(output)
-        page += 1
+        with open(f'urls/{publisher_id}', 'a') as f:
+            f.write(f'{dataset_name} {url}\n')
+
+        output = tmpl.format(
+            publisher_id=publisher_id,
+            dataset_name=dataset_name,
+            url=url.replace(' ', '%20'),
+        )
+        with open('downloads.curl', 'a') as f:
+            f.write(output)
 
 
 if __name__ == '__main__':
