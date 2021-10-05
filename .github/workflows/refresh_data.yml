@@ -1,5 +1,6 @@
 name: Refresh data
 on:
+  push:
   schedule:
     - cron: '0 */3 * * *'
 jobs:
@@ -30,7 +31,7 @@ jobs:
         ./reset_folders.sh >/dev/null
     - name: Download and unzip last data dump
       run: |
-        curl -sL "https://www.dropbox.com/s/kkm80yjihyalwes/iati_dump.zip?dl=1" -o "iati_dump.zip"
+        curl -sL "https://iati-data.s3.eu-west-1.amazonaws.com/iati_data.zip" -o "iati_dump.zip"
         unzip -oq iati_dump.zip
         rm -rf iati_dump.zip metadata metadata.json
         mv data cache
@@ -52,9 +53,13 @@ jobs:
       run: |
         zip -gqr iati_data.zip data metadata metadata.json
         echo "FILE_SIZE=$(wc -c < iati_data.zip | xargs)" >> $GITHUB_ENV
-    - name: Upload zip to dropbox
+    - name: Adding S3 credentials
       run: |
-        python dropbox_upload.py "/IATI data dump" iati_data.zip --token "${{ secrets.DROPBOX_TOKEN }}"
+        mkdir ~/.aws
+        printf "[default]\naws_access_key_id = ${{ secrets.AWS_ACCESS_KEY }}\naws_secret_access_key = ${{ secrets.AWS_SECRET_KEY }}\n" > ~/.aws/credentials
+    - name: Upload zip to S3
+      run: |
+        python s3_upload.py iati_data.zip iati-data
     - name: Adding token to .gist
       run: |
         echo "${{ secrets.GH_TOKEN }}" > ~/.gist
