@@ -25,9 +25,8 @@ request.onload = function () {
   if (request.status === 200) {
     var metadata = JSON.parse(request.responseText)
     var el = document.getElementById('metadata')
-    var filesize = Math.round(metadata.file_size / 1e6)
     var timestamp = new Date(metadata.updated_at)
-    el.innerHTML = filesize + ' MB. Last updated: <span class="tooltipped" data-position="bottom" data-tooltip="' + timestamp.toString() + '">' + timestamp.toDateString() + '</span>'
+    el.innerHTML = 'Last updated: <span class="tooltipped" data-position="bottom" data-tooltip="' + timestamp.toString() + '">' + timestamp.toDateString() + '</span>'
     fadeIn(el)
     var elems = document.querySelectorAll('.tooltipped');
     var instances = M.Tooltip.init(elems);

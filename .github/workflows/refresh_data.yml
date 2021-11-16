@@ -29,13 +29,11 @@ jobs:
     - name: Create folders
       run: |
         ./reset_folders.sh >/dev/null
-    - name: Download and unzip last data dump
+    - name: Pull iati-data repo
       run: |
-        curl -sL "https://iati-data.s3.eu-west-1.amazonaws.com/iati_data.zip" -o "iati_dump.zip"
-        unzip -oq iati_dump.zip
-        rm -rf iati_dump.zip metadata metadata.json
-        mv data cache
-        mkdir data
+        git clone --quiet https://iati-data-repo:${{ secrets.GITLAB_TOKEN }}@gitlab.com/codeforIATI/iati-data.git
+        rm -rf iati-data/metadata iati-data/metadata.json
+        mv iati-data/data cache
         echo "START_TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")" >> $GITHUB_ENV
     - name: Fetch URLs and metadata
       run: |
@@ -49,28 +47,29 @@ jobs:
     - name: Create initial metadata.json
       run: |
         echo "{\"created_at\": \"${{ env.START_TIMESTAMP }}\", \"updated_at\": \"${{ env.END_TIMESTAMP }}\"}" > metadata.json
-    - name: Zip up the fetched data
+    - name: Move files into place
       run: |
-        zip -gqr iati_data.zip data metadata metadata.json
-        echo "FILE_SIZE=$(wc -c < iati_data.zip | xargs)" >> $GITHUB_ENV
-    - name: Adding S3 credentials
+        mv metadata iati-data
+        mv data iati-data
+        cp metadata.json iati-data
+    - name: Push to gitlab
       run: |
-        mkdir ~/.aws
-        printf "[default]\naws_access_key_id = ${{ secrets.AWS_ACCESS_KEY }}\naws_secret_access_key = ${{ secrets.AWS_SECRET_KEY }}\n" > ~/.aws/credentials
-    - name: Upload zip to S3
-      run: |
-        python s3_upload.py iati_data.zip iati-data
+        cd iati-data
+        git config --global user.name 'Code for IATI bot'
+        git config --global user.email '10231116-codeforIATIbot@users.noreply.gitlab.com'
+        git config core.autocrlf false
+        git add .
+        git commit --quiet --message='Update'
+        git push --quiet origin main
+        cd ..
     - name: Adding token to .gist
       run: |
         echo "${{ secrets.GH_TOKEN }}" > ~/.gist
-    - name: Upload metadata to gist
-      run: |
-        echo "{\"file_size\": \"${{ env.FILE_SIZE }}\", \"created_at\": \"${{ env.START_TIMESTAMP }}\", \"updated_at\": \"${{ env.END_TIMESTAMP }}\"}" > metadata.json
         bundle exec gist -u efd190029713c6775c43962444dcb8df metadata.json
     - name: Uploading errors to gist
       run: |
         bundle exec gist -u f117c9be138aa94c9762d57affc51a64 errors
     - name: Tidy up
       run: |
-        rm -rf iati_data.zip metadata.json errors
+        rm -rf metadata.json errors iati-data
         ./reset_folders.sh >/dev/null
