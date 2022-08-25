@@ -1,6 +1,5 @@
 name: Refresh data
 on:
-  push:
   schedule:
     - cron: '0 */3 * * *'
 jobs:
