@@ -2,7 +2,7 @@
 
 #### A daily snapshot of all IATI data (and metadata) on the IATI registry.
 
-[Download all IATI data](https://iati-data.s3.eu-west-1.amazonaws.com/iati_data.zip)
+[Download all IATI data](https://iati-data-dump.codeforiati.org/)
 
 #### Rationale
 
