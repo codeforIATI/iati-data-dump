@@ -59,7 +59,7 @@ jobs:
         git config core.autocrlf false
         git add .
         git commit --quiet --message='Update'
-        git push --quiet --force origin main
+        git push --quiet origin main
         cd ..
     - name: Adding token to .gist
       run: |
