@@ -21,3 +21,7 @@ We perform a daily fetch of all IATI data, compress it, and upload the archive. 
 The original code relied heavily on [IATI Registry Refresher](https://github.com/IATI/IATI-Registry-Refresher), made by [@caprenter](https://github.com/caprenter) and [@Bjwebb](https://github.com/Bjwebb).
 
 The new, much faster code was contributed by [@notshi](https://github.com/notshi) and [@xriss](https://github.com/xriss).
+
+#### Contributing
+
+Feel free to raise an issue or send a pull request.
