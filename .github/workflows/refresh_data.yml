@@ -30,7 +30,7 @@ jobs:
         ./reset_folders.sh >/dev/null
     - name: Pull iati-data repo
       run: |
-        git clone --quiet https://iati-data-repo:${{ secrets.GITLAB_TOKEN }}@gitlab.com/codeforIATI/iati-data.git
+        git clone --quiet --depth=1 https://iati-data-repo:${{ secrets.GITLAB_TOKEN }}@gitlab.com/codeforIATI/iati-data.git
         rm -rf iati-data/metadata iati-data/metadata.json
         mv iati-data/data cache
         echo "START_TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")" >> $GITHUB_ENV
@@ -59,7 +59,7 @@ jobs:
         git config core.autocrlf false
         git add .
         git commit --quiet --message='Update'
-        git push --quiet origin main
+        git push --quiet --force origin main
         cd ..
     - name: Adding token to .gist
       run: |
