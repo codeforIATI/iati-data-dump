@@ -12,7 +12,7 @@ Downloading a single archive file is significantly faster. That’s available he
 
 #### How does this work?
 
-We perform a daily fetch of all IATI data, compress it, and uploads the archive. There’s a metadata.json file inside the zip, that lets you know how fresh the data is.
+We perform a daily fetch of all IATI data, compress it, and upload the archive. There’s a metadata.json file inside the zip, that lets you know how fresh the data is.
 
 [This github gist](https://gist.github.com/codeforIATIbot/f117c9be138aa94c9762d57affc51a64) is updated with the list of erroring datasets.
 
