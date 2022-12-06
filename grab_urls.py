@@ -42,7 +42,8 @@ def main(args):
            '"{url}" 2>&1 >/dev/null ; exitcode=$? ; ' + \
            'test "$exitcode" != 0 && ' + \
            'echo $exitcode {publisher_id} {dataset_name} "{url}" > ' + \
-           'logs/{dataset_name}.log\n'
+           'logs/{dataset_name}.log && touch ' + \
+           'data/{publisher_id}/{dataset_name}.xml\n'
 
     datasets = requests.get(
         "https://registry.codeforiati.org/dataset_list.json").json()["result"]
