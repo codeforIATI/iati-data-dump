@@ -17,7 +17,7 @@ function fadeIn (el) {
   tick()
 }
 
-var url = 'https://gist.githubusercontent.com/codeforIATIbot/efd190029713c6775c43962444dcb8df/raw/metadata.json'
+var url = 'https://data.iati-data-dump.opendataservices.coop/metadata.json'
 
 var request = new XMLHttpRequest()
 request.open('GET', url, true)
