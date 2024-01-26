@@ -1,7 +1,5 @@
 name: Refresh data
-#on:
-#  schedule:
-#    - cron: '0 */3 * * *'
+on: workflow_dispatch
 jobs:
   refresh_data:
     runs-on: ubuntu-latest
