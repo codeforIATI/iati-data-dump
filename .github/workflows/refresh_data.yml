@@ -1,7 +1,7 @@
 name: Refresh data
-on:
-  schedule:
-    - cron: '0 */3 * * *'
+#on:
+#  schedule:
+#    - cron: '0 */3 * * *'
 jobs:
   refresh_data:
     runs-on: ubuntu-latest
