@@ -1,4 +1,4 @@
-## IATI Data Dump
+## IATI Data Dump (frontend)
 
 #### A daily snapshot of all IATI data (and metadata) on the IATI registry.
 
@@ -12,15 +12,8 @@ Downloading a single archive file is significantly faster. That’s available he
 
 #### How does this work?
 
-We perform a daily fetch of all IATI data, compress it, and upload the archive. There’s a metadata.json file inside the zip, that lets you know how fresh the data is.
-
-[This github gist](https://gist.github.com/codeforIATIbot/f117c9be138aa94c9762d57affc51a64) is updated with the list of erroring datasets.
-
-#### Acknowledgements
-
-The original code relied heavily on [IATI Registry Refresher](https://github.com/IATI/IATI-Registry-Refresher), made by [@caprenter](https://github.com/caprenter) and [@Bjwebb](https://github.com/Bjwebb).
-
-The new, much faster code was contributed by [@notshi](https://github.com/notshi) and [@xriss](https://github.com/xriss).
+For the backend code, check out:
+[https://github.com/OpenDataServices/iati-data-dump-2](https://github.com/OpenDataServices/iati-data-dump-2)
 
 #### Contributing
 
