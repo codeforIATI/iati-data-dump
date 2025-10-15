@@ -1,3 +1,3 @@
 ---
 ---
-{{ site.download_url }}
+{{ site.deprecated_download_url }}
